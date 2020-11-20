@@ -17,7 +17,9 @@ Controller示例文件文件参考SignController.py
 使用maven的package即可，之后会发现生成一个target目录其中里面就有jar包了。
 ### 使用jar包
 ```
-java -jar xxx.jar
+cd target
+jar -xf unidbg-server-0.0.1-SNAPSHOT.jar
+java -cp BOOT-INF/classes:BOOT-INF/lib/* com.spider.unidbgserver.UnidbgServerApplication
 ```
 ### Python调用示例
 ```
