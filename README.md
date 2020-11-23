@@ -24,7 +24,7 @@ java -cp BOOT-INF/classes:BOOT-INF/lib/* com.spider.unidbgserver.UnidbgServerApp
 ### Python调用示例
 ```
 import requests
-url = 'http://0.0.0.0:9090/dySign'
+url = 'http://0.0.0.0:9090/unidbg/dySign'
 data = {'url': 'https://aweme-eagle.snssdk.com/aweme/v1/feed/?type=0&max_cursor=0&min_cursor=-1&count=30&volume=0.06666666666666667&pull_type=2&need_relieve_aweme=0&ts=1604989727&app_type=lite&manifest_version_code=180&_rticket=1604989727594&ac=wifi&device_id=123411234&iid=123411234&os_version=8.1.0&channel=xiaoshangdian_douyin_and19&version_code=180&device_type=Pixel&language=zh&resolution=1080*1758&openudid=2dc3087ecc9addf9&update_version_code=1800&app_name=aweme&version_name=1.8.0&os_api=27&device_brand=google&ssmix=a&device_platform=android&dpi=540&aid=1128'}
 req=requests.post(url,data=data)
 print(req.json())
