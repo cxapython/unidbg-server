@@ -7,8 +7,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @Controller
+@RequestMapping("/unidbg")
 public class SignController {
     private static final Logger logger = LoggerFactory.getLogger(SignController.class);
+
 
     @RequestMapping(value="dySign",method =  {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
