@@ -19,13 +19,8 @@ Controller示例文件文件参考SignController.py
 ```
 cd target
 jar -xf unidbg-server-0.0.1-SNAPSHOT.jar
-### 下面这句一定要在bash下运行
-java -cp BOOT-INF/classes:BOOT-INF/lib/* com.spider.unidbgserver.UnidbgServerApplication
-```
-如果用zsh运行最后一句会出现错误
-```
-java -cp BOOT-INF/classes:BOOT-INF/lib/* com.spider.unidbgserver.UnidbgServerApplication
-zsh: no matches found: BOOT-INF/classes:BOOT-INF/lib/*
+# 注意使用zsh的话`BOOT-INF/classes:BOOT-INF/lib/*`必须加引号,bash就可以不用。
+java -cp "BOOT-INF/classes:BOOT-INF/lib/*" com.spider.unidbgserver.UnidbgServerApplication  
 ```
 ### Python调用示例
 ```
