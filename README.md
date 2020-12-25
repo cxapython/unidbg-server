@@ -19,9 +19,10 @@ Controller示例文件文件参考SignController.py
 ```
 cd target
 jar -xf unidbg-server-0.0.1-SNAPSHOT.jar
-# 注意使用zsh的话`BOOT-INF/classes:BOOT-INF/lib/*`必须加引号,bash就可以不用。
 java -cp "BOOT-INF/classes:BOOT-INF/lib/*" com.spider.unidbgserver.UnidbgServerApplication  
 ```
+`注意使用zsh的话BOOT-INF/classes:BOOT-INF/lib/*必须加引号,bash就可以不用。`
+
 ### Python调用示例
 ```
 import requests
