@@ -18,12 +18,15 @@ Controller示例文件文件参考SignController.py
 ### 使用jar包
 ```
 cd target
-java -jar unidbg-server-0.0.1-SNAPSHOT.jar   
-### 下面的备用
-### jar -xf unidbg-server-0.0.1-SNAPSHOT.jar
-### java -cp BOOT-INF/classes:BOOT-INF/lib/* com.spider.unidbgserver.UnidbgServerApplication
+jar -xf unidbg-server-0.0.1-SNAPSHOT.jar
+### 下面这句一定要在bash下运行
+java -cp BOOT-INF/classes:BOOT-INF/lib/* com.spider.unidbgserver.UnidbgServerApplication
 ```
-
+如果用zsh运行最后一句会出现错误
+```
+java -cp BOOT-INF/classes:BOOT-INF/lib/* com.spider.unidbgserver.UnidbgServerApplication
+zsh: no matches found: BOOT-INF/classes:BOOT-INF/lib/*
+```
 ### Python调用示例
 ```
 import requests
