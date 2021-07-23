@@ -158,10 +158,10 @@ public class DouyinSign extends AbstractJni {
         return result;
     }
 
-    public static void main(String[] args) {
-        DouyinSign dy = new DouyinSign();
-        String url = "https://aweme.snssdk.com/aweme/v1/challenge/aweme/?cursor=0&ch_id=1581874377004045&count=20&query_type=0&source=challenge_video&type=5&manifest_version_code=800&_rticket=1608711602548&app_type=normal&iid=3254203031511742&channel=wandoujia_aweme2&device_type=Pixel&language=zh&resolution=1080*1758&openudid=2dc3087ecc9addf9&update_version_code=8002&os_api=27&dpi=540&ac=wifi&device_id=2814349075811115&mcc_mnc=46000&os_version=8.1.0&version_code=800&app_name=aweme&version_name=8.0.0&js_sdk_version=1.25.0.1&device_brand=google&ssmix=a&device_platform=android&aid=1128&ts=1608711602";
-
-        System.out.println(dy.crack(url));
-    }
+//    public static void main(String[] args) {
+//        DouyinSign dy = new DouyinSign();
+//        String url = "https://aweme.snssdk.com/aweme/v1/challenge/aweme/?cursor=0&ch_id=1581874377004045&count=20&query_type=0&source=challenge_video&type=5&manifest_version_code=800&_rticket=1608711602548&app_type=normal&iid=3254203031511742&channel=wandoujia_aweme2&device_type=Pixel&language=zh&resolution=1080*1758&openudid=2dc3087ecc9addf9&update_version_code=8002&os_api=27&dpi=540&ac=wifi&device_id=2814349075811115&mcc_mnc=46000&os_version=8.1.0&version_code=800&app_name=aweme&version_name=8.0.0&js_sdk_version=1.25.0.1&device_brand=google&ssmix=a&device_platform=android&aid=1128&ts=1608711602";
+//
+//        System.out.println(dy.crack(url));
+//    }
 }

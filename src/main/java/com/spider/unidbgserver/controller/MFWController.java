@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Controller
@@ -16,11 +17,10 @@ import java.util.Map;
 public class MFWController {
     @RequestMapping(value="mfwSign",method =  {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public String mfwSign(@RequestParam("url") String url) {
+    public String mfwSign(@RequestParam("url") String url) throws IOException {
         MaFengWo mfw = new MaFengWo();
         Map<String,String> result=mfw.xPreAuthencode(url);
         String jsonString = JSON.toJSONString(result);
-
         return jsonString;
     }
 }
