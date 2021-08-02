@@ -1,4 +1,4 @@
-package com.spider.unidbgserver.controller;
+package com.worker;
 
 import com.crack.DouyinSign;
 import com.github.unidbg.worker.Worker;
@@ -6,7 +6,7 @@ import com.github.unidbg.worker.Worker;
 import java.io.IOException;
 import java.util.Map;
 
-class DYWorker implements Worker {
+public class DYWorker implements Worker {
     private final DouyinSign douyinSign;
 
     public DYWorker() {
