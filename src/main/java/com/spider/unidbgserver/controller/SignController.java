@@ -22,28 +22,28 @@ public class SignController {
     }
 
     final int processors = Runtime.getRuntime().availableProcessors()/2 +2;
-    final WorkerPool xgPool = WorkerPoolFactory.create(XGWorker::new, processors);
+    final WorkerPool xgPool = WorkerPoolFactory.create(DYWorker::new, processors);
 
-    final static ExecutorService executorXG = Executors.newFixedThreadPool(50);
+    final static ExecutorService executor = new ThreadPoolExecutor(10, 20, 0L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue(10), new ThreadPoolExecutor.CallerRunsPolicy());
 
     @RequestMapping(value="dySign",method =  {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public String dySign(@RequestParam("url") String url) {
         try{
             System.out.println("url: "+url);
-            Future<Map<String, String>> submit = executorXG.submit(() -> {
-                XGWorker worker = xgPool.borrow(1, TimeUnit.MINUTES);
+            Future<Map<String, String>> submit = executor.submit(() -> {
+                DYWorker worker = xgPool.borrow(1, TimeUnit.MINUTES);
                 if (worker != null) {
                     try {
                         return worker.worker(url);
                     }catch (Throwable throwable){
-                        System.err.println("XGWorker error: "+throwable);
+                        System.err.println("DYWorker error: "+throwable);
                     }
                     finally {
                         xgPool.release(worker);
                     }
                 } else {
-                    System.err.println("XGWorker Borrow failed");
+                    System.err.println("DYWorker Borrow failed");
                 }
 
                 return null;
@@ -61,22 +61,22 @@ public class SignController {
 }
 
 
-class XGWorker implements Worker{
+class DYWorker implements Worker{
     private final DouyinSign douyinSign;
 
-    public XGWorker() {
+    public DYWorker() {
         douyinSign = new DouyinSign();
         System.out.println("Create: " + douyinSign);
     }
 
     public void close() throws IOException {
-        System.out.println("XGWorker close()");
+        System.out.println("DYWorker close()");
         douyinSign.destroy();
     }
 
 
     public Map<String, String> worker(String... args) {
-        System.out.println("XGWorker worker: " + Thread.currentThread().getName() + Thread.currentThread().getId());
+        System.out.println("DYWorker worker: " + Thread.currentThread().getName() + Thread.currentThread().getId());
         String url = args[0];
         return douyinSign.crack(url);
     }
