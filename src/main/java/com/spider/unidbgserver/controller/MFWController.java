@@ -45,7 +45,6 @@ public class MFWController {
     @ResponseBody
     public String mfwSign(@RequestParam("url") String url) {
         try{
-            System.out.println("url: "+url);
             Future<Map<String, String>> submit = executor.submit(() -> {
                 MFWWorker worker = xgPool.borrow(1, TimeUnit.MINUTES);
                 if (worker != null) {
@@ -68,7 +67,7 @@ public class MFWController {
 
         }catch (Throwable throwable){
             throwable.printStackTrace();
-            System.out.println("mfwSign throwable: "+throwable.toString());
+//            System.out.println("mfwSign throwable: "+throwable.toString());
             return null;
         }
 

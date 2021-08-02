@@ -15,8 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
-
-import static com.crack.utils.tools.encodeUrl;
+import static com.crack.utils.tools.*;
 
 /*
 xPreAuthencode目标native

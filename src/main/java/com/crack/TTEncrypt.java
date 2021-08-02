@@ -15,6 +15,7 @@ import com.github.unidbg.utils.Inspector;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPOutputStream;
 
 public class TTEncrypt extends AbstractJni {
@@ -26,14 +27,14 @@ public class TTEncrypt extends AbstractJni {
     private TTEncrypt() {
         emulator = new AndroidARMEmulator("com.xxx.offical"); // 创建模拟器实例，要模拟32位或者64位，在这里区分
         Memory memory = emulator.getMemory();
-        memory.setLibraryResolver(new AndroidResolver(23, new String[0]));
+        memory.setLibraryResolver(new AndroidResolver(23));
         vm = emulator.createDalvikVM(null);
         vm.setJni(this);
         vm.setVerbose(true);
         DalvikModule dm = vm.loadLibrary(new File("/Users/chennan/javaproject/unidbg-server/src/main/resources/example_binaries/libttEncrypt.so"), false);
         dm.callJNI_OnLoad(emulator);
         module = dm.getModule();
-        TTEncryptUtils = vm.resolveClass("com/bytedance/frameworks/core/encrypt/TTEncryptUtils", new DvmClass[0]);
+        TTEncryptUtils = vm.resolveClass("com/bytedance/frameworks/core/encrypt/TTEncryptUtils");
     }
 
     private void destroy() throws IOException {
@@ -52,7 +53,7 @@ public class TTEncrypt extends AbstractJni {
 
     private void ttEncrypt(String str) throws IOException {
         long start = System.currentTimeMillis();
-        byte[] bArr2 = str.getBytes("UTF-8");
+        byte[] bArr2 = str.getBytes(StandardCharsets.UTF_8);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(8192);
         GZIPOutputStream gZIPOutputStream = new GZIPOutputStream(byteArrayOutputStream);
         gZIPOutputStream.write(bArr2);
