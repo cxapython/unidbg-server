@@ -56,6 +56,9 @@ public class MaFengWo extends AbstractJni {
         Map<String,String> obj= new HashMap<>();
         return obj;
     }
+    public void destroy() throws IOException {
+        emulator.close();
+    }
 
     public MaFengWo() {
         emulator = new AndroidARMEmulator("com.mfw.roadbook"); // 创建模拟器实例，要模拟32位或者64位，在这里区分

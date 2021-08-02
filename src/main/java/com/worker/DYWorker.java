@@ -11,17 +11,17 @@ public class DYWorker implements Worker {
 
     public DYWorker() {
         douyinSign = new DouyinSign();
-        System.out.println("Create: " + douyinSign);
+//        System.out.println("Create: " + douyinSign);
     }
 
+    @Override
     public void close() throws IOException {
-        System.out.println("DYWorker close()");
+//        System.out.println("DYWorker close()");
         douyinSign.destroy();
     }
 
-
     public Map<String, String> worker(String... args) {
-        System.out.println("DYWorker worker: " + Thread.currentThread().getName() + Thread.currentThread().getId());
+//        System.out.println("DYWorker worker: " + Thread.currentThread().getName() + Thread.currentThread().getId());
         String url = args[0];
         return douyinSign.crack(url);
     }
