@@ -1,5 +1,6 @@
 package com.crack;
 
+import com.alibaba.fastjson.JSON;
 import com.github.unidbg.AndroidEmulator;
 import com.github.unidbg.Module;
 import com.github.unidbg.arm.backend.DynarmicFactory;
@@ -7,7 +8,10 @@ import com.github.unidbg.linux.android.AndroidARMEmulator;
 import com.github.unidbg.linux.android.AndroidEmulatorBuilder;
 import com.github.unidbg.linux.android.AndroidResolver;
 import com.github.unidbg.linux.android.dvm.*;
+import com.github.unidbg.linux.android.dvm.api.ApplicationInfo;
+import com.github.unidbg.linux.android.dvm.array.ArrayObject;
 import com.github.unidbg.linux.android.dvm.array.ByteArray;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,18 +21,24 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.github.unidbg.memory.Memory;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Indexed;
+
 public class DouyinSign extends AbstractJni {
 
+    private static final String SO_PATH = "/Users/chennan/javaproject/unidbg-server/src/main/resources/example_binaries/libcms.so";
     private final AndroidEmulator emulator;
     private final Module module;
     private final VM vm;
 
     private final DvmClass Native;
+
     static {
         String soPath = "example_binaries/libcms.so";
         ClassPathResource classPathResource = new ClassPathResource(soPath);
@@ -39,19 +49,21 @@ public class DouyinSign extends AbstractJni {
             e.printStackTrace();
         }
     }
-    public static Map<String,String> dyObj(){
-        Map<String,String> obj= new HashMap<>();
+
+    public static Map<String, String> dyObj() {
+        Map<String, String> obj = new HashMap<>();
         return obj;
     }
+
     public DouyinSign() {
 //        emulator = new AndroidARMEmulator("com.xxx.offical"); // 创建模拟器实例，要模拟32位或者64位，在这里区分
-         emulator = AndroidEmulatorBuilder.for32Bit().addBackendFactory(new DynarmicFactory(true)).setProcessName("com.xxx.offical").build();
+        emulator = AndroidEmulatorBuilder.for32Bit().addBackendFactory(new DynarmicFactory(true)).setProcessName("com.ss.android.ugc.aweme").build();
         final Memory memory = emulator.getMemory(); // 模拟器的内存操作接口
         memory.setLibraryResolver(new AndroidResolver(23));// 设置系统类库解析
         vm = emulator.createDalvikVM(); // 创建Android虚拟机
 
         vm.setJni(this);
-//        vm.setVerbose(true);// 设置是否打印Jni调用细节
+        vm.setVerbose(true);// 设置是否打印Jni调用细节
 
         // 自行修改文件路径,loadLibrary是java加载so的方法
         DalvikModule dm = vm.loadLibrary(new File("./libcms.so"), false); // 加载libcms.so到unicorn虚拟内存，加载成功以后会默认调用init_array等函数
@@ -61,16 +73,80 @@ public class DouyinSign extends AbstractJni {
         //leviathan所在的类，调用resolveClass解析该class对象
         Native = vm.resolveClass("com/ss/sys/ces/a");
         try {
-            Native.callStaticJniMethod(emulator,  "leviathan(II[B)[B", -1, 123456, new ByteArray(vm, "".getBytes()));
+            Native.callStaticJniMethod(emulator, "leviathan(II[B)[B", -1, 123456, new ByteArray(vm, "".getBytes()));
 
         } catch (Exception e) {
 
         }
     }
 
+    @Override
+    public DvmObject callStaticObjectMethodV(BaseVM vm, DvmClass dvmClass, String signature, VaList vaList) {
+        switch (signature) {
+            case "java/lang/Thread->currentThread()Ljava/lang/Thread;":
+                return vm.resolveClass("java/lang/Thread").newObject(Thread.currentThread());
+            case "android/provider/Settings$Secure->getString(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;":
+                return new StringObject(vm, "");
+            case "java/net/NetworkInterface->getByName(Ljava/lang/String;)Ljava/net/NetworkInterface;":
+                return vm.resolveClass("java/net/NetworkInterface").newObject(null);
+            case "android/app/Application->getApplicationInfo()Landroid/content/pm/ApplicationInfo;":
+                return new ApplicationInfo(vm);
+            case "android/net/Uri->parse(Ljava/lang/String;)Landroid/net/Uri;":
+                return vm.resolveClass("android/net/Uri").newObject(null);
+            case "java/lang/System->getProperty(Ljava/lang/String;)Ljava/lang/String;":
+                return new StringObject(vm, "6");
+        }
+        return super.callStaticObjectMethodV(vm, dvmClass, signature, vaList);
+    }
+
+    @Override
+    public DvmObject callObjectMethodV(BaseVM vm, DvmObject dvmObject, String signature, VaList vaList) {
+        switch (signature) {
+            case "java/lang/Thread->getStackTrace()[Ljava/lang/StackTraceElement;":
+                StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+                DvmObject[] objs = new DvmObject[elements.length];
+                for (int i = 0; i < elements.length; i++) {
+                    objs[i] = vm.resolveClass("java/lang/StackTraceElement").newObject(elements[i]);
+                }
+                return new ArrayObject(objs);
+            case "java/lang/StackTraceElement->getClassName()Ljava/lang/String;":
+                StackTraceElement element = (StackTraceElement) dvmObject.getValue();
+                return new StringObject(vm, element.getClassName());
+            case "android/app/Application->getApplicationInfo()Landroid/content/pm/ApplicationInfo;":
+                return new ApplicationInfo(vm);
+            case "android/app/Application->getPackageName()Ljava/lang/String;":
+                return new StringObject(vm, "com.ss.android.ugc.aweme");
+            case "android/content/ContentResolver->call(Landroid/net/Uri;Ljava/lang/String;Ljava/lang/String;Landroid/os/Bundle;)Landroid/os/Bundle;":
+                return vm.resolveClass("android/os/Bundle").newObject(null);
+            case "android/os/Bundle->getString(Ljava/lang/String;)Ljava/lang/String;":
+                return vm.resolveClass("android/os/Bundle").newObject(null);
+            case "android/os/Bundle->getBytes(Ljava/lang/String;)[B":
+                new ByteArray(vm, "sss".getBytes());
+            case "java/net/NetworkInterface->getHardwareAddress()[B":
+                return new ByteArray(vm, "".getBytes());
+        }
+        return super.callObjectMethodV(vm, dvmObject, signature, vaList);
+    }
+
+    @Override
+    public DvmObject<?> getObjectField(BaseVM vm, DvmObject<?> dvmObject, String signature) {
+        if ("android/app/ApplicationInfo->sourceDir:Ljava/lang/String;".equals(signature)) {
+            return new StringObject(vm, SO_PATH);
+        }
+        if ("android/content/pm/ApplicationInfo->sourceDir:Ljava/lang/String;".equals(signature)) {
+            return new StringObject(vm, SO_PATH);
+        }
+        return super.getObjectField(vm, dvmObject, signature);
+    }
+
+    public boolean callStaticBooleanMethodV(BaseVM vm, DvmClass dvmClass, String signature, VaList vaList) {
+        return signature.equals("android/os/Debug->isDebuggerConnected()Z");
+    }
+
     public void destroy() throws IOException {
         emulator.close();
     }
+
     public static String genXGorgon(byte[] bArr) {
         if (bArr == null) {
             return null;
@@ -147,16 +223,26 @@ public class DouyinSign extends AbstractJni {
         byte[] data = str2byte(sb.toString());
         float currentTimeMillis = System.currentTimeMillis();
         int timeStamp = (int) (currentTimeMillis / 1000);
-
-        ByteArray ret = Native.callStaticJniMethodObject(emulator, methodSign, -1, timeStamp, new ByteArray(vm, data));
-
+        List<Object> list = new ArrayList<>(10);
+        list.add(vm.getJNIEnv()); // 第一个参数是env
+        list.add(0); // 第二个参数，实例方法是jobject，静态方法是jclass，直接填0，一般用不到。
+        list.add(-1);
+        list.add(timeStamp);
+        list.add(vm.addLocalObject(new ByteArray(vm, data)));
+        // 直接通过地址调用
+        Number number = module.callFunction(emulator, 0x57789, list.toArray())[0];
+        ByteArray ret = vm.getObject(number.intValue());
+        //通过调用jni静态方法调用
+        //      ByteArray ret = Native.callStaticJniMethodObject(emulator, methodSign, -1, timeStamp, new ByteArray(vm, data));
         // 获取地址的值
         byte[] tt = ret.getValue();
         //执行最外层的com.ss.a.b.a.a
         String s = genXGorgon(tt);
-        Map<String,String> result=dyObj();
-        result.put("X-Khronos",timeStamp+"");
-        result.put("X-Gorgon" ,s);
+
+
+        Map<String, String> result = dyObj();
+        result.put("X-Khronos", timeStamp + "");
+        result.put("X-Gorgon", s);
         return result;
     }
 

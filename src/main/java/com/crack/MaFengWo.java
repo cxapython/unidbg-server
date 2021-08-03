@@ -61,6 +61,7 @@ public class MaFengWo extends AbstractJni {
         emulator.close();
     }
 
+
     public MaFengWo() {
 //        emulator = new AndroidARMEmulator("com.mfw.roadbook"); // 创建模拟器实例，要模拟32位或者64位，在这里区分
         emulator = AndroidEmulatorBuilder.for32Bit().addBackendFactory(new DynarmicFactory(true)).setProcessName("com.mfw.roadbook").build();
@@ -84,7 +85,6 @@ public class MaFengWo extends AbstractJni {
         list.add(vm.addLocalObject(context));
         list.add(vm.addLocalObject(new StringObject(vm,allParams)));
         list.add(vm.addLocalObject(new StringObject(vm,"com.mfw.roadbook")));
-
         Number number = module.callFunction(emulator,0x2e235,list.toArray())[0];
         String zzzghostsigh = vm.getObject(number.intValue()).getValue().toString();
         String lasturl = allParams+encodeUrl("&zzzghostsigh="+zzzghostsigh);
