@@ -9,15 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.concurrent.*;
 
-import com.github.unidbg.arm.backend.dynarmic.DynarmicLoader;
 //多线程池版本，ThreadPool Version
 @Controller
 @RequestMapping("/unidbg")
 public class SignController {
-
-    static {
-        DynarmicLoader.forceUseDynarmic();
-    }
 
     final int processors = Runtime.getRuntime().availableProcessors()/2 +2;
     final WorkerPool xgPool = WorkerPoolFactory.create(DYWorker::new, processors);

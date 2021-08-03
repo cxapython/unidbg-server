@@ -1,7 +1,6 @@
 package com.spider.unidbgserver.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.github.unidbg.arm.backend.dynarmic.DynarmicLoader;
 import com.github.unidbg.worker.WorkerPool;
 import com.github.unidbg.worker.WorkerPoolFactory;
 import com.worker.MFWWorker;
@@ -31,10 +30,6 @@ import java.util.concurrent.*;
 @Controller
 @RequestMapping("/unidbg")
 public class MFWController {
-
-    static {
-        DynarmicLoader.forceUseDynarmic();
-    }
 
     final int processors = Runtime.getRuntime().availableProcessors()/2 +2;
     final WorkerPool xgPool = WorkerPoolFactory.create(MFWWorker::new, processors);

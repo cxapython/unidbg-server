@@ -1,5 +1,7 @@
 package com.crack;
+import com.github.unidbg.arm.backend.DynarmicFactory;
 import com.github.unidbg.linux.android.AndroidARMEmulator;
+import com.github.unidbg.linux.android.AndroidEmulatorBuilder;
 import com.github.unidbg.linux.android.dvm.AbstractJni;
 import com.github.unidbg.AndroidEmulator;
 import com.github.unidbg.Module;
@@ -60,7 +62,8 @@ public class MaFengWo extends AbstractJni {
     }
 
     public MaFengWo() {
-        emulator = new AndroidARMEmulator("com.mfw.roadbook"); // 创建模拟器实例，要模拟32位或者64位，在这里区分
+//        emulator = new AndroidARMEmulator("com.mfw.roadbook"); // 创建模拟器实例，要模拟32位或者64位，在这里区分
+        emulator = AndroidEmulatorBuilder.for32Bit().addBackendFactory(new DynarmicFactory(true)).setProcessName("com.mfw.roadbook").build();
         final Memory memory = emulator.getMemory(); // 模拟器的内存操作接口
         memory.setLibraryResolver(new AndroidResolver(23));// 设置系统类库解析
         vm = emulator.createDalvikVM(new File("./mafengwo.apk")); // 创建Android虚拟机
