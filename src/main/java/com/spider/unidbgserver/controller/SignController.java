@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.concurrent.*;
 
-//多线程池版本，ThreadPool Version
+//多线程池版本，ThreadPool Version，使用同步锁的版本见MFWController
 @Controller
 @RequestMapping("/unidbg")
 public class SignController {
