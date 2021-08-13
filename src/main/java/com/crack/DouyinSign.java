@@ -28,8 +28,10 @@ import java.util.Map;
 
 import com.github.unidbg.memory.Memory;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Indexed;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+@Component
 public class DouyinSign extends AbstractJni {
 
     private static final String SO_PATH = "/Users/chennan/javaproject/unidbg-server/src/main/resources/example_binaries/libcms.so";
