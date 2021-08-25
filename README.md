@@ -13,15 +13,14 @@ springboot运行unidbg
 通过application.properties自行修改服务的地址和端口
 
 Controller示例文件文件参考SignController.py
+
 ### 打jar包
 使用maven的package即可，之后会发现生成一个target目录其中里面就有jar包了。
+
 ### 使用jar包
 ```
-cd target
-jar -xf unidbg-server-0.0.1-SNAPSHOT.jar
-java -cp "BOOT-INF/classes:BOOT-INF/lib/*" com.spider.unidbgserver.UnidbgServerApplication  
+java -jar target\unidbg-server-0.0.2.jar 
 ```
-`注意使用zsh的话BOOT-INF/classes:BOOT-INF/lib/*必须加引号,bash就可以不用。`
 
 ### Python调用示例
 ```
@@ -31,8 +30,10 @@ data = {'url': 'https://aweme-eagle.snssdk.com/aweme/v1/feed/?type=0&max_cursor=
 req=requests.post(url,data=data)
 print(req.json())
 ```
+
 ### 当前问题:
 springboot使用unidbg遇到logback和sl4j依赖冲突
 目前通过pom.xml暂时解决了
+
 ### 感谢
 https://github.com/zhkl0228/unidbg
