@@ -19,7 +19,7 @@
 
 
     <properties>
-        <start-class>com.spider.unidbgserver.UnidbgServerApplication</start-class>
+        <start-class>com.UnidbgServerApplication</start-class>
         <java.version>1.8</java.version>
     </properties>
 
