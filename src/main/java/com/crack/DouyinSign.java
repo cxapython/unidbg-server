@@ -1,10 +1,11 @@
 package com.crack;
-
-import com.alibaba.fastjson.JSON;
 import com.github.unidbg.AndroidEmulator;
+import com.github.unidbg.Emulator;
 import com.github.unidbg.Module;
 import com.github.unidbg.arm.backend.DynarmicFactory;
-import com.github.unidbg.linux.android.AndroidARMEmulator;
+import com.github.unidbg.file.FileResult;
+import com.github.unidbg.file.IOResolver;
+import com.github.unidbg.file.linux.AndroidFileIO;
 import com.github.unidbg.linux.android.AndroidEmulatorBuilder;
 import com.github.unidbg.linux.android.AndroidResolver;
 import com.github.unidbg.linux.android.dvm.*;
@@ -26,13 +27,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.unidbg.linux.file.ByteArrayFileIO;
 import com.github.unidbg.memory.Memory;
+import com.github.unidbg.virtualmodule.android.AndroidModule;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
-public class DouyinSign extends AbstractJni {
+public class DouyinSign extends AbstractJni implements IOResolver {
 
     private static final String SO_PATH = "/Users/chennan/javaproject/unidbg-server/src/main/resources/example_binaries/libcms.so";
     private final AndroidEmulator emulator;
@@ -42,11 +44,18 @@ public class DouyinSign extends AbstractJni {
     private final DvmClass Native;
 
     static {
+        //防止打成jar包的时候找不到文件
         String soPath = "example_binaries/libcms.so";
+        String appPath = "example_binaries/douyin10_6.apk";
         ClassPathResource classPathResource = new ClassPathResource(soPath);
+        ClassPathResource appPathResource = new ClassPathResource(appPath);
+
         try {
             InputStream inputStream = classPathResource.getInputStream();
             Files.copy(inputStream, Paths.get("./libcms.so"), StandardCopyOption.REPLACE_EXISTING);
+            InputStream appinputStream = appPathResource.getInputStream();
+            Files.copy(appinputStream, Paths.get("./douyin10_6.apk"), StandardCopyOption.REPLACE_EXISTING);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -62,7 +71,8 @@ public class DouyinSign extends AbstractJni {
         emulator = AndroidEmulatorBuilder.for32Bit().addBackendFactory(new DynarmicFactory(true)).setProcessName("com.ss.android.ugc.aweme").build();
         final Memory memory = emulator.getMemory(); // 模拟器的内存操作接口
         memory.setLibraryResolver(new AndroidResolver(23));// 设置系统类库解析
-        vm = emulator.createDalvikVM(); // 创建Android虚拟机
+        vm = emulator.createDalvikVM(new File("./douyin10_6.apk")); // 创建Android虚拟机
+        new AndroidModule(emulator,vm).register(memory);
 
         vm.setJni(this);
         vm.setVerbose(true);// 设置是否打印Jni调用细节
@@ -246,6 +256,18 @@ public class DouyinSign extends AbstractJni {
         result.put("X-Khronos", timeStamp + "");
         result.put("X-Gorgon", s);
         return result;
+    }
+
+    @Override
+    public FileResult resolve(Emulator emulator, String pathname, int oflags) {
+        if (("proc/"+emulator.getPid()+"/cmdline").equals(pathname)) {
+            return FileResult.success(new ByteArrayFileIO(oflags, pathname, "com.ss.android.ugc.aweme".getBytes()));
+        }
+        if (("proc/" + emulator.getPid() + "/status").equals(pathname)) {
+            return FileResult.<AndroidFileIO>success(new ByteArrayFileIO(oflags, pathname, "TracerPid:\t0\n".getBytes()));
+
+        }
+        return null;
     }
 
 //    public static void main(String[] args) {
