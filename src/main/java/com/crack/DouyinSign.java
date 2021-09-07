@@ -1,10 +1,11 @@
 package com.crack;
-
-import com.alibaba.fastjson.JSON;
 import com.github.unidbg.AndroidEmulator;
+import com.github.unidbg.Emulator;
 import com.github.unidbg.Module;
 import com.github.unidbg.arm.backend.DynarmicFactory;
-import com.github.unidbg.linux.android.AndroidARMEmulator;
+import com.github.unidbg.file.FileResult;
+import com.github.unidbg.file.IOResolver;
+import com.github.unidbg.file.linux.AndroidFileIO;
 import com.github.unidbg.linux.android.AndroidEmulatorBuilder;
 import com.github.unidbg.linux.android.AndroidResolver;
 import com.github.unidbg.linux.android.dvm.*;
@@ -26,34 +27,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.unidbg.linux.file.ByteArrayFileIO;
 import com.github.unidbg.memory.Memory;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.github.unidbg.virtualmodule.android.AndroidModule;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 
-//@Component
-public class DouyinSign extends AbstractJni {
+
+@Component
+public class DouyinSign extends AbstractJni implements IOResolver {
 
     private static final String SO_PATH = "/Users/chennan/javaproject/unidbg-server/src/main/resources/example_binaries/libcms.so";
-    private AndroidEmulator emulator;
-    private Module module;
-    @Resource
-    private VM vm;
-    private DvmClass nativeClazz;
+    private final AndroidEmulator emulator;
+    private final Module module;
+    private final VM vm;
 
-//    static {
-//        String soPath = "example_binaries/libcms.so";
-//        ClassPathResource classPathResource = new ClassPathResource(soPath);
-//        try {
-//            InputStream inputStream = classPathResource.getInputStream();
-//            Files.copy(inputStream, Paths.get("./libcms.so"), StandardCopyOption.REPLACE_EXISTING);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    private final DvmClass nativeClazz;
+
+    static {
+        //防止打成jar包的时候找不到文件
+        String soPath = "example_binaries/libcms.so";
+        String appPath = "example_binaries/douyin10_6.apk";
+        ClassPathResource classPathResource = new ClassPathResource(soPath);
+        ClassPathResource appPathResource = new ClassPathResource(appPath);
+
+        try {
+            InputStream inputStream = classPathResource.getInputStream();
+            Files.copy(inputStream, Paths.get("./libcms.so"), StandardCopyOption.REPLACE_EXISTING);
+            InputStream appinputStream = appPathResource.getInputStream();
+            Files.copy(appinputStream, Paths.get("./douyin10_6.apk"), StandardCopyOption.REPLACE_EXISTING);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public DouyinSign() {
@@ -61,7 +69,8 @@ public class DouyinSign extends AbstractJni {
         emulator = AndroidEmulatorBuilder.for32Bit().addBackendFactory(new DynarmicFactory(true)).setProcessName("com.ss.android.ugc.aweme").build();
         Memory memory = emulator.getMemory(); // 模拟器的内存操作接口
         memory.setLibraryResolver(new AndroidResolver(23));// 设置系统类库解析
-        vm = emulator.createDalvikVM(); // 创建Android虚拟机
+        vm = emulator.createDalvikVM(new File("./douyin10_6.apk")); // 创建Android虚拟机
+        new AndroidModule(emulator,vm).register(memory);
 
         vm.setJni(this);
         vm.setVerbose(true);// 设置是否打印Jni调用细节
@@ -246,10 +255,22 @@ public class DouyinSign extends AbstractJni {
         return result;
     }
 
-//    public static void main(String[] args) {
-//        DouyinSign dy = new DouyinSign();
-//        String url = "https://aweme.snssdk.com/aweme/v1/challenge/aweme/?cursor=0&ch_id=1581874377004045&count=20&query_type=0&source=challenge_video&type=5&manifest_version_code=800&_rticket=1608711602548&app_type=normal&iid=3254203031511742&channel=wandoujia_aweme2&device_type=Pixel&language=zh&resolution=1080*1758&openudid=2dc3087ecc9addf9&update_version_code=8002&os_api=27&dpi=540&ac=wifi&device_id=2814349075811115&mcc_mnc=46000&os_version=8.1.0&version_code=800&app_name=aweme&version_name=8.0.0&js_sdk_version=1.25.0.1&device_brand=google&ssmix=a&device_platform=android&aid=1128&ts=1608711602";
-//
-//        System.out.println(dy.crack(url));
-//    }
+    @Override
+    public FileResult resolve(Emulator emulator, String pathname, int oflags) {
+        if (("proc/"+emulator.getPid()+"/cmdline").equals(pathname)) {
+            return FileResult.success(new ByteArrayFileIO(oflags, pathname, "com.ss.android.ugc.aweme".getBytes()));
+        }
+        if (("proc/" + emulator.getPid() + "/status").equals(pathname)) {
+            return FileResult.<AndroidFileIO>success(new ByteArrayFileIO(oflags, pathname, "TracerPid:\t0\n".getBytes()));
+
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        DouyinSign dy = new DouyinSign();
+        String url = "https://aweme.snssdk.com/aweme/v1/challenge/aweme/?cursor=0&ch_id=1581874377004045&count=20&query_type=0&source=challenge_video&type=5&manifest_version_code=800&_rticket=1608711602548&app_type=normal&iid=3254203031511742&channel=wandoujia_aweme2&device_type=Pixel&language=zh&resolution=1080*1758&openudid=2dc3087ecc9addf9&update_version_code=8002&os_api=27&dpi=540&ac=wifi&device_id=2814349075811115&mcc_mnc=46000&os_version=8.1.0&version_code=800&app_name=aweme&version_name=8.0.0&js_sdk_version=1.25.0.1&device_brand=google&ssmix=a&device_platform=android&aid=1128&ts=1608711602";
+
+        System.out.println(dy.crack(url));
+    }
 }
