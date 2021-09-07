@@ -7,7 +7,7 @@ import com.github.unidbg.linux.android.dvm.array.ByteArray;
 
 public class DouyinJniNext extends AbstractJni {
 
-    private static final String SO_PATH = "/Users/chennan/javaproject/unidbg-server/src/main/resources/example_binaries/libcms.so";
+    private static final String SO_PATH = "example_binaries/libcms.so";
 
     @Override
     public DvmObject callStaticObjectMethodV(BaseVM vm, DvmClass dvmClass, String signature, VaList vaList) {

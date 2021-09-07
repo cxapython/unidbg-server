@@ -38,7 +38,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DouyinSign extends AbstractJni implements IOResolver {
 
-    private static final String SO_PATH = "/Users/chennan/javaproject/unidbg-server/src/main/resources/example_binaries/libcms.so";
+    private static String SO_PATH = "/Users/chennan/javaproject/unidbg-server/src/main/resources/example_binaries/libcms.so";
     private final AndroidEmulator emulator;
     private final Module module;
     private final VM vm;
@@ -46,11 +46,15 @@ public class DouyinSign extends AbstractJni implements IOResolver {
     private final DvmClass nativeClazz;
 
     static {
+
         //防止打成jar包的时候找不到文件
         String soPath = "example_binaries/libcms.so";
         String appPath = "example_binaries/douyin10_6.apk";
         ClassPathResource classPathResource = new ClassPathResource(soPath);
         ClassPathResource appPathResource = new ClassPathResource(appPath);
+
+        SO_PATH = soPath;
+
 
         try {
             InputStream inputStream = classPathResource.getInputStream();
@@ -66,7 +70,9 @@ public class DouyinSign extends AbstractJni implements IOResolver {
 
     public DouyinSign() {
 //        emulator = new AndroidARMEmulator("com.xxx.offical"); // 创建模拟器实例，要模拟32位或者64位，在这里区分
-        emulator = AndroidEmulatorBuilder.for32Bit().addBackendFactory(new DynarmicFactory(true)).setProcessName("com.ss.android.ugc.aweme").build();
+        emulator = AndroidEmulatorBuilder.for32Bit()
+                .addBackendFactory(new DynarmicFactory(true))
+                .setProcessName("com.ss.android.ugc.aweme").build();
         Memory memory = emulator.getMemory(); // 模拟器的内存操作接口
         memory.setLibraryResolver(new AndroidResolver(23));// 设置系统类库解析
         vm = emulator.createDalvikVM(new File("./douyin10_6.apk")); // 创建Android虚拟机
@@ -270,7 +276,7 @@ public class DouyinSign extends AbstractJni implements IOResolver {
     public static void main(String[] args) {
         DouyinSign dy = new DouyinSign();
         String url = "https://aweme.snssdk.com/aweme/v1/challenge/aweme/?cursor=0&ch_id=1581874377004045&count=20&query_type=0&source=challenge_video&type=5&manifest_version_code=800&_rticket=1608711602548&app_type=normal&iid=3254203031511742&channel=wandoujia_aweme2&device_type=Pixel&language=zh&resolution=1080*1758&openudid=2dc3087ecc9addf9&update_version_code=8002&os_api=27&dpi=540&ac=wifi&device_id=2814349075811115&mcc_mnc=46000&os_version=8.1.0&version_code=800&app_name=aweme&version_name=8.0.0&js_sdk_version=1.25.0.1&device_brand=google&ssmix=a&device_platform=android&aid=1128&ts=1608711602";
-
+        System.out.println("----------------------------");
         System.out.println(dy.crack(url));
     }
 }

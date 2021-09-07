@@ -16,6 +16,7 @@ import java.util.Map;
 
 @Service
 public class DouyinSignService {
+
     public Map<String, String> crack(String url) {
         // 调用so的入口，这是smali写法
         String methodSign = "leviathan(II[B)[B";
