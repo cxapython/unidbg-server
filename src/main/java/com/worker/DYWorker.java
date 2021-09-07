@@ -2,6 +2,8 @@ package com.worker;
 
 import com.crack.DouyinSign;
 import com.github.unidbg.worker.Worker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
@@ -25,4 +27,6 @@ public class DYWorker implements Worker {
         String url = args[0];
         return douyinSign.crack(url);
     }
+
+    private static Logger logger = LoggerFactory.getLogger(DYWorker.class);
 }

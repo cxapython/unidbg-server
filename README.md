@@ -15,6 +15,10 @@ springboot运行unidbg
 Controller示例文件文件参考SignController.py
 
 ### 打jar包
+配置好maven环境的前提下，项目主目录执行
+````java
+ mvn clean package -Dmaven.test.skip=true  
+````
 使用maven的package即可，之后会发现生成一个target目录其中里面就有jar包了。
 
 ### 使用jar包

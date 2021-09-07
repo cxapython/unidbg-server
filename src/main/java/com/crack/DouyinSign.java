@@ -27,40 +27,39 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.unidbg.memory.Memory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Component
+import javax.annotation.Resource;
+
+//@Component
 public class DouyinSign extends AbstractJni {
 
     private static final String SO_PATH = "/Users/chennan/javaproject/unidbg-server/src/main/resources/example_binaries/libcms.so";
-    private final AndroidEmulator emulator;
-    private final Module module;
-    private final VM vm;
+    private AndroidEmulator emulator;
+    private Module module;
+    @Resource
+    private VM vm;
+    private DvmClass nativeClazz;
 
-    private final DvmClass Native;
+//    static {
+//        String soPath = "example_binaries/libcms.so";
+//        ClassPathResource classPathResource = new ClassPathResource(soPath);
+//        try {
+//            InputStream inputStream = classPathResource.getInputStream();
+//            Files.copy(inputStream, Paths.get("./libcms.so"), StandardCopyOption.REPLACE_EXISTING);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-    static {
-        String soPath = "example_binaries/libcms.so";
-        ClassPathResource classPathResource = new ClassPathResource(soPath);
-        try {
-            InputStream inputStream = classPathResource.getInputStream();
-            Files.copy(inputStream, Paths.get("./libcms.so"), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static Map<String, String> dyObj() {
-        Map<String, String> obj = new HashMap<>();
-        return obj;
-    }
 
     public DouyinSign() {
 //        emulator = new AndroidARMEmulator("com.xxx.offical"); // 创建模拟器实例，要模拟32位或者64位，在这里区分
         emulator = AndroidEmulatorBuilder.for32Bit().addBackendFactory(new DynarmicFactory(true)).setProcessName("com.ss.android.ugc.aweme").build();
-        final Memory memory = emulator.getMemory(); // 模拟器的内存操作接口
+        Memory memory = emulator.getMemory(); // 模拟器的内存操作接口
         memory.setLibraryResolver(new AndroidResolver(23));// 设置系统类库解析
         vm = emulator.createDalvikVM(); // 创建Android虚拟机
 
@@ -73,12 +72,11 @@ public class DouyinSign extends AbstractJni {
         module = dm.getModule();// 加载好的libcms.so对应为一个模块
 
         //leviathan所在的类，调用resolveClass解析该class对象
-        Native = vm.resolveClass("com/ss/sys/ces/a");
+        nativeClazz = vm.resolveClass("com/ss/sys/ces/a");
         try {
-            Native.callStaticJniMethod(emulator, "leviathan(II[B)[B", -1, 123456, new ByteArray(vm, "".getBytes()));
-
+            nativeClazz.callStaticJniMethod(emulator, "leviathan(II[B)[B", -1, 123456, new ByteArray(vm, "".getBytes()));
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -242,7 +240,7 @@ public class DouyinSign extends AbstractJni {
         String s = genXGorgon(tt);
 
 
-        Map<String, String> result = dyObj();
+        Map<String, String> result = new HashMap<>();
         result.put("X-Khronos", timeStamp + "");
         result.put("X-Gorgon", s);
         return result;

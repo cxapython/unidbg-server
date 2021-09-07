@@ -1,17 +1,14 @@
 package com.crack;
 
-import com.github.unidbg.arm.backend.DynarmicFactory;
-import com.github.unidbg.linux.android.AndroidARMEmulator;
-import com.github.unidbg.linux.android.AndroidEmulatorBuilder;
-import com.github.unidbg.linux.android.dvm.AbstractJni;
+import com.crack.utils.Tools;
 import com.github.unidbg.AndroidEmulator;
 import com.github.unidbg.Module;
+import com.github.unidbg.arm.backend.DynarmicFactory;
+import com.github.unidbg.linux.android.AndroidEmulatorBuilder;
 import com.github.unidbg.linux.android.AndroidResolver;
 import com.github.unidbg.linux.android.dvm.*;
 import com.github.unidbg.memory.Memory;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,11 +16,12 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static com.crack.utils.tools.*;
-
-@Component
+//@Component
 public class MaFengWo extends AbstractJni {
     private final AndroidEmulator emulator;
     private final Module module;
@@ -82,7 +80,7 @@ public class MaFengWo extends AbstractJni {
         list.add(vm.addLocalObject(new StringObject(vm, "com.mfw.roadbook")));
         Number number = module.callFunction(emulator, 0x2e235, list.toArray())[0];
         String zzzghostsigh = vm.getObject(number.intValue()).getValue().toString();
-        String lasturl = allParams + encodeUrl("&zzzghostsigh=" + zzzghostsigh);
+        String lasturl = allParams + Tools.encodeUrl("&zzzghostsigh=" + zzzghostsigh);
         String oauth_signature = xAuthencode(lasturl);
         Map<String, String> result = mfwObj();
         result.put("zzzghostsigh", zzzghostsigh);
