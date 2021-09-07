@@ -20,6 +20,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <unidbg.version>0.9.4</unidbg.version>
     </properties>
 
     <dependencies>
@@ -49,11 +50,7 @@
 <!--            test:在测试范围有效，它在执行命令test的时候才执行，并且它不会传播给其他模块进行引入，比如 junit,dbunit 等测试框架。-->
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.slf4j</groupId>-->
-<!--            <artifactId>slf4j-simple</artifactId>-->
-<!--            <version>${slf4j.version}</version>-->
-<!--        </dependency>-->
+
         <dependency>
 <!--            groupId, artifactId, version:描述了依赖的项目唯一标志。-->
             <groupId>commons-io</groupId>
@@ -83,17 +80,17 @@
         <dependency>
             <groupId>com.github.zhkl0228</groupId>
             <artifactId>unidbg-api</artifactId>
-            <version>0.9.4</version>
+            <version>${unidbg.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.zhkl0228</groupId>
             <artifactId>unidbg-android</artifactId>
-            <version>0.9.4</version>
+            <version>${unidbg.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.zhkl0228</groupId>
             <artifactId>unidbg-dynarmic</artifactId>
-            <version>0.9.4</version>
+            <version>${unidbg.version}</version>
         </dependency>
     </dependencies>
     <build>
