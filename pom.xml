@@ -9,18 +9,17 @@
         <version>2.1.3.RELEASE</version>
         <relativePath/>
     </parent>
+
     <groupId>com.spider</groupId>
     <artifactId>unidbg-server</artifactId>
     <version>0.0.2</version>
     <name>unidbg-server</name>
-    <description>r Spring Boot</description>
+    <description>unidbg-server Spring Boot</description>
     <!-- 打包的格式，可以为：pom , jar , maven-plugin , ejb , war , ear , rar , par -->
     <packaging>jar</packaging>
-
-
     <properties>
         <java.version>1.8</java.version>
-        <unidbg.version>0.9.4</unidbg.version>
+        <unidbg.version>0.9.5</unidbg.version>
     </properties>
 
     <dependencies>
@@ -91,6 +90,22 @@
             <groupId>com.github.zhkl0228</groupId>
             <artifactId>unidbg-dynarmic</artifactId>
             <version>${unidbg.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>unidbg-api</artifactId>
+                    <groupId>com.github.zhkl0228</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
     <build>
