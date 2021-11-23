@@ -37,8 +37,7 @@ public class DouyinConfiguration {
         Memory memory = emulator.getMemory(); // 模拟器的内存操作接口
         memory.setLibraryResolver(new AndroidResolver(23));// 设置系统类库解析
 
-        VM vm = emulator.createDalvikVM(ResourceUtils.getFile("classpath:example_binaries/douyin10_6.apk")); // 创建Android虚拟机
-//        VM vm = emulator.createDalvikVM(new File("example_binaries\\douyin10_6.apk")); // 创建Android虚拟机
+       VM vm = emulator.createDalvikVM(new File("./douyin10_6.apk")); // 创建Android虚拟机
         vm.setJni(new DouyinJniNext());
         vm.setVerbose(true);// 设置是否打印Jni调用细节
 
@@ -53,7 +52,7 @@ public class DouyinConfiguration {
     public DalvikModule douyinModule(@Qualifier("douyinVM") DouyinVM douyinVM) throws FileNotFoundException {
         // 自行修改文件路径,loadLibrary是java加载so的方法
         DalvikModule dm = douyinVM.getVm()
-                .loadLibrary(ResourceUtils.getFile("classpath:example_binaries/libcms.so"), false); // 加载libcms.so到unicorn虚拟内存，加载成功以后会默认调用init_array等函数
+                .loadLibrary("cms", true); // 加载libcms.so到unicorn虚拟内存，加载成功以后会默认调用init_array等函数
         dm.callJNI_OnLoad(douyinVM.getEmulator());// 手动执行JNI_OnLoad函数
         //leviathan所在的类，调用resolveClass解析该class对象
         DvmClass nativeClazz = douyinVM.getVm().resolveClass("com/ss/sys/ces/a");

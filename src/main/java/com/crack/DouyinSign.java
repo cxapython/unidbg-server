@@ -46,7 +46,6 @@ public class DouyinSign extends AbstractJni implements IOResolver {
     private final DvmClass nativeClazz;
 
     static {
-
         //防止打成jar包的时候找不到文件
         String soPath = "example_binaries/libcms.so";
         String appPath = "example_binaries/douyin10_6.apk";
