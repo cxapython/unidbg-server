@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <!--    定义一个parent元素，在这个元素中指明需要继承项目的groupId、artifactId和version。-->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -11,17 +9,16 @@
     </parent>
 
     <groupId>com.spider</groupId>
-    <artifactId>unidbg-server</artifactId>
-    <version>0.0.2</version>
-    <name>unidbg-server</name>
-    <description>unidbg-server Spring Boot</description>
+    <artifactId>unidbg</artifactId>
+    <version>0.9.6-SNAPSHOT</version>
+    <name>unidbg-parent</name>
+    <description>unidbg-parent Spring Boot</description>
     <!-- 打包的格式，可以为：pom , jar , maven-plugin , ejb , war , ear , rar , par -->
     <packaging>jar</packaging>
     <properties>
-        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <unidbg.version>0.9.5</unidbg.version>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -45,13 +42,13 @@
                 </exclusion>
             </exclusions>
 
-<!--            scope:用于限制相应的依赖范围、传播范围。-->
-<!--            test:在测试范围有效，它在执行命令test的时候才执行，并且它不会传播给其他模块进行引入，比如 junit,dbunit 等测试框架。-->
+            <!--            scope:用于限制相应的依赖范围、传播范围。-->
+            <!--            test:在测试范围有效，它在执行命令test的时候才执行，并且它不会传播给其他模块进行引入，比如 junit,dbunit 等测试框架。-->
             <scope>test</scope>
         </dependency>
 
         <dependency>
-<!--            groupId, artifactId, version:描述了依赖的项目唯一标志。-->
+            <!--            groupId, artifactId, version:描述了依赖的项目唯一标志。-->
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
@@ -116,4 +113,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
