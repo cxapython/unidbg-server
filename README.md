@@ -45,6 +45,3 @@ print(req.json())
 
 ### 感谢
 https://github.com/zhkl0228/unidbg
-
-学unidbg强烈推荐龙哥的星球，更新频率高
-![](https://img2020.cnblogs.com/blog/736399/202111/736399-20211108182436999-806188411.jpg)
