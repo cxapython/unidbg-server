@@ -53,7 +53,7 @@
 <!--            groupId, artifactId, version:描述了依赖的项目唯一标志。-->
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.4</version>
+            <version>2.14.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.zhkl0228</groupId>
@@ -78,17 +78,17 @@
         <dependency>
             <groupId>com.github.zhkl0228</groupId>
             <artifactId>unidbg-api</artifactId>
-            <version>${unidbg.version}</version>
+            <version>0.9.5</version>
         </dependency>
         <dependency>
             <groupId>com.github.zhkl0228</groupId>
             <artifactId>unidbg-android</artifactId>
-            <version>${unidbg.version}</version>
+            <version>0.9.5</version>
         </dependency>
         <dependency>
             <groupId>com.github.zhkl0228</groupId>
             <artifactId>unidbg-dynarmic</artifactId>
-            <version>${unidbg.version}</version>
+            <version>0.9.5</version>
             <exclusions>
                 <exclusion>
                     <artifactId>unidbg-api</artifactId>
@@ -99,12 +99,12 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
+            <version>1.7.33</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
+            <version>1.7.33</version>
         </dependency>
     </dependencies>
     <build>
